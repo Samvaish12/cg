@@ -1,0 +1,60 @@
+#ifdef __APPLE__
+#include <GLUT/glut.h>
+#else
+#include<windows.h>
+#include <GL/glut.h>
+#endif
+
+#include <stdlib.h>
+#include <math.h>
+
+float x = -0.9f;
+float speed = 0.01f;
+
+void display() {
+    glClear(GL_COLOR_BUFFER_BIT);
+
+
+    glBegin(GL_TRIANGLE_FAN);
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex2f(x, 0.0f);
+    for (int i = 0; i <= 100; i++) {
+        float angle = 2.0f * M_PI * float(i) / float(100);
+        float dx = 0.1f * cosf(angle);
+        float dy = 0.1f * sinf(angle);
+        glVertex2f(x + dx, dy);
+    }
+    glEnd();
+
+    glutSwapBuffers();
+}
+
+void update(int value) {
+    x += speed;
+    if (x > 1.0f) {
+        x = -1.1f;
+    }
+    glutPostRedisplay();
+    glutTimerFunc(16, update, 0);
+}
+
+void init() {
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glColor3f(1.0f, 1.0f, 1.0f);
+    glPointSize(5.0f);
+    glEnable(GL_POINT_SMOOTH);
+}
+
+int main(int argc, char** argv) {
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+    glutInitWindowSize(800, 600);
+    glutCreateWindow("Circle Animation");
+
+    init();
+    glutDisplayFunc(display);
+    glutTimerFunc(0, update, 0);
+
+    glutMainLoop();
+    return 0;
+}
